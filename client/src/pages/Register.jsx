@@ -21,18 +21,17 @@ const Register = () => {
     hasNumber: false,
     hasSpecialChar: false,
     passwordMatch: false,
+    isLengthValid: false, 
   });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setData((prev) => {
-      return {
-        ...prev,
-        [name]: value,
-      };
-    });
+    setData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
 
     if (name === "password") {
       validatePassword(value);
@@ -50,12 +49,14 @@ const Register = () => {
     const upperCase = /[A-Z]/.test(password);
     const number = /\d/.test(password);
     const specialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const isLengthValid = password.length >= 8; // Check for length
 
     setPasswordErrors({
       hasUpperCase: upperCase,
       hasNumber: number,
       hasSpecialChar: specialChar,
       passwordMatch: password === data.confirmPassword,
+      isLengthValid: isLengthValid, // Update length validation
     });
   };
 
@@ -67,6 +68,11 @@ const Register = () => {
     if (data.password !== data.confirmPassword) {
       toast.error("Las contraseñas no coinciden");
       return;
+    }
+
+    if (!passwordErrors.isLengthValid) {
+      toast.error("La contraseña debe tener al menos 8 caracteres");
+      return; // Prevent submission if length is invalid
     }
 
     try {
@@ -145,28 +151,25 @@ const Register = () => {
               </div>
             </div>
             <div className="text-xs text-gray-600 mt-1">
-              <p
-                className={`${
-                  passwordErrors.hasUpperCase ? "text-green-600" : "text-red-600"
-                }`}
-              >
+              <p className={`${
+                passwordErrors.hasUpperCase ? "text-green-600" : "text-red-600"
+              }`}>
                 • Una mayúscula
               </p>
-              <p
-                className={`${
-                  passwordErrors.hasNumber ? "text-green-600" : "text-red-600"
-                }`}
-              >
+              <p className={`${
+                passwordErrors.hasNumber ? "text-green-600" : "text-red-600"
+              }`}>
                 • Un número
               </p>
-              <p
-                className={`${
-                  passwordErrors.hasSpecialChar
-                    ? "text-green-600"
-                    : "text-red-600"
-                }`}
-              >
+              <p className={`${
+                passwordErrors.hasSpecialChar ? "text-green-600" : "text-red-600"
+              }`}>
                 • Un símbolo especial
+              </p>
+              <p className={`${
+                passwordErrors.isLengthValid ? "text-green-600" : "text-red-600"
+              }`}>
+                • Al menos 8 caracteres
               </p>
             </div>
           </div>
@@ -203,7 +206,8 @@ const Register = () => {
               !passwordErrors.hasUpperCase ||
               !passwordErrors.hasNumber ||
               !passwordErrors.hasSpecialChar ||
-              !passwordErrors.passwordMatch
+              !passwordErrors.passwordMatch ||
+              !passwordErrors.isLengthValid // Disable if length is invalid
             }
             className={`${
               valideValue

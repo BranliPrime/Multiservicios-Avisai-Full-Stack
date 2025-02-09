@@ -58,11 +58,11 @@ const UploadProduct = () => {
 
     if (name === "name" && value.trim().length < 3) {
       newErrors[name] = "El nombre debe tener al menos 3 caracteres";
-    } else if (name === "stock" && (value === "" || value < 0)) {
+    } else if (name === "stock" && (value === "" || value <= 0)) {
       newErrors[name] = "El stock debe ser un número positivo";
     } else if (name === "price" && (value === "" || value <= 0)) {
       newErrors[name] = "El precio debe ser mayor a 0";
-    } else if (name === "discount" && (value < 0 || value > 100)) {
+    } else if (name === "discount" && (value <= 0 || value > 100)) {
       newErrors[name] = "El descuento debe estar entre 0 y 100";
     } else {
       delete newErrors[name]; // Si el campo es válido, eliminamos el error
@@ -158,13 +158,12 @@ const UploadProduct = () => {
       errores.push("El precio es obligatorio");
     }
 
-    // Si hay errores, mostramos la lista de errores
     if (errores.length > 0) {
       alert(errores.join("\n"));
       return;
     }
 
-    // Convertir a número y validar campos numéricos
+
     const stock = Number(data.stock);
     const price = Number(data.price);
     const discount = data.discount !== "" ? Number(data.discount) : null;
@@ -193,7 +192,7 @@ const UploadProduct = () => {
           unit: "",
           stock: "",
           price: "",
-          discount: null, // Resetear correctamente
+          discount: null, 
           description: "",
           more_details: {},
         });
