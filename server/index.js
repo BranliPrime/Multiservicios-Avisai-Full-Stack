@@ -14,6 +14,8 @@ import productRouter from "./routes/product.route.js";
 import cartRouter from "./routes/cart.route.js";
 import addressRouter from "./routes/address.route.js";
 import orderRouter from "./routes/order.route.js";
+import sunatRouter from "./routes/sunat.route.js";
+
 
 const app = express();
 app.use(
@@ -47,6 +49,7 @@ app.use("/api/product",productRouter)
 app.use("/api/cart",cartRouter)
 app.use("/api/address",addressRouter)
 app.use('/api/order',orderRouter)
+app.use("/api/sunat", sunatRouter);
 
 
 connectDB().then(() => {

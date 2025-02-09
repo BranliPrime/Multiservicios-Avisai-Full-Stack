@@ -3,3 +3,4 @@ export const pricewithDiscount = (price,dis = 1)=>{
   const actualPrice = Number(price) - Number(discountAmout)
   return actualPrice
 }
+export default pricewithDiscount;

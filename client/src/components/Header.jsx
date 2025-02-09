@@ -41,6 +41,9 @@ const Header = () => {
 
     navigate("/user")
   }
+  // Calcular IGV (18%)
+  const igv = totalPrice * 0.18;
+  const totalConIGV = totalPrice + igv;
 
   //total item and total price
   // useEffect(()=>{
@@ -135,7 +138,7 @@ const Header = () => {
                       cartItem[0] ? (
                         <div className='font-semibold'>
                           <p>{totalQty} Artículos</p>
-                          <p>{DisplayPriceInSoles(totalPrice)}</p>
+                          <p>{DisplayPriceInSoles(totalConIGV)}</p>
                         </div>
                       ) : (
                         <p>Mi carrito</p>

@@ -10,6 +10,10 @@ const CartMobileLink = () => {
   const { totalPrice, totalQty } = useGlobalContext()
   const cartItem = useSelector(state => state.cartItem.cart)
 
+  // Calcular IGV (18%)
+  const igv = totalPrice * 0.18;
+  const totalConIGV = totalPrice + igv;
+
   return (
     <>
       {
@@ -22,11 +26,11 @@ const CartMobileLink = () => {
                 </div>
                 <div className='text-xs'>
                   <p>{totalQty} Articulos</p>
-                  <p>{DisplayPriceInSoles(totalPrice)}</p>
+                  <p>{DisplayPriceInSoles(totalConIGV)}</p>
                 </div>
               </div>
 
-              <Link to={"/cart"} className='flex items-center gap-1'>
+              <Link to={'/cart'} className='flex items-center gap-1'>
                 <span className='text-sm'>Ver Carrito</span>
                 <FaCaretRight />
               </Link>
@@ -35,7 +39,6 @@ const CartMobileLink = () => {
         )
       }
     </>
-
   )
 }
 
