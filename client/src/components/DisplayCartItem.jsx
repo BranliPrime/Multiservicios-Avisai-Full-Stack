@@ -16,6 +16,9 @@ const DisplayCartItem = ({ close }) => {
   const user = useSelector(state => state.user)
   const navigate = useNavigate()
 
+  const IGV = totalPrice * 0.18;
+  const totalConIGV = totalPrice + IGV;
+
   const redirectToCheckoutPage = () => {
     if (user?._id) {
       navigate("/checkout")
@@ -40,89 +43,70 @@ const DisplayCartItem = ({ close }) => {
         </div>
 
         <div className='min-h-[75vh] lg:min-h-[80vh] h-full max-h-[calc(100vh-150px)] bg-blue-50 p-2 flex flex-col gap-4'>
-          {/***mostrar artículos */}
-          {
-            cartItem[0] ? (
-              <>
-                <div className='flex items-center justify-between px-4 py-2 bg-blue-100 text-blue-500 rounded-full'>
-                  <p>Tus ahorros totales</p>
-                  <p>{DisplayPriceInSoles(notDiscountTotalPrice - totalPrice)}</p>
-                </div>
-                <div className='bg-white rounded-lg p-4 grid gap-5 overflow-auto'>
-                  {
-                    cartItem[0] && (
-                      cartItem.map((item, index) => {
-                        return (
-                          <div key={item?._id + "cartItemDisplay"} className='flex  w-full gap-4'>
-                            <div className='w-16 h-full min-h-16 min-w-16  border rounded flex items-center justify-center'>
-                              <img
-                                src={item?.productId?.image[0]}
-                                className='object-scale-down'
-                              />
-                            </div>
-                            <div className='w-full max-w-sm text-xs'>
-                              <p className='text-xs text-ellipsis line-clamp-2'>{item?.productId?.name}</p>
-                              <p className='text-neutral-400'>{item?.productId?.unit}</p>
-                              <p className='font-semibold'>{DisplayPriceInSoles(pricewithDiscount(item?.productId?.price, item?.productId?.discount))}</p>
-                            </div>
-                            <div>
-                              <AddToCartButton data={item?.productId} />
-                            </div>
-                          </div>
-                        )
-                      })
-                    )
-                  }
-                </div>
-                <div className='bg-white p-4'>
-                  <h3 className='font-semibold'>Detalles de la factura</h3>
-                  <div className='flex gap-4 justify-between ml-1'>
-                    <p>Total de artículos</p>
-                    <p className='flex items-center gap-2'><span className='line-through text-neutral-400'>{DisplayPriceInSoles(notDiscountTotalPrice)}</span><span>{DisplayPriceInSoles(totalPrice)}</span></p>
-                  </div>
-                  <div className='flex gap-4 justify-between ml-1'>
-                    <p>Total de cantidad</p>
-                    <p className='flex items-center gap-2'>{totalQty} árticulos</p>
-                  </div>
-                  <div className='flex gap-4 justify-between ml-1'>
-                    <p>Cargo de entrega</p>
-                    <p className='flex items-center gap-2'>Gratis</p>
-                  </div>
-                  <div className='font-semibold flex items-center justify-between gap-4'>
-                    <p >Total general</p>
-                    <p>{DisplayPriceInSoles(totalPrice)}</p>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className='bg-white flex flex-col justify-center items-center'>
-                <img
-                  src={imageEmpty}
-                  className='w-full h-full object-scale-down'
-                />
-                <Link onClick={close} to={"/"} className='block bg-green-600 px-4 py-2 text-white rounded'>Comprar ahora</Link>
+          {cartItem[0] ? (
+            <>
+              <div className='flex items-center justify-between px-4 py-2 bg-blue-100 text-blue-500 rounded-full'>
+                <p>Tus ahorros totales</p>
+                <p>{DisplayPriceInSoles(notDiscountTotalPrice - totalPrice)}</p>
               </div>
-            )
-          }
-
+              <div className='bg-white rounded-lg p-4 grid gap-5 overflow-auto'>
+                {cartItem.map((item) => (
+                  <div key={item?._id + "cartItemDisplay"} className='flex w-full gap-4'>
+                    <div className='w-16 h-full min-h-16 min-w-16 border rounded flex items-center justify-center'>
+                      <img src={item?.productId?.image[0]} className='object-scale-down' />
+                    </div>
+                    <div className='w-full max-w-sm text-xs'>
+                      <p className='text-xs text-ellipsis line-clamp-2'>{item?.productId?.name}</p>
+                      <p className='text-neutral-400'>{item?.productId?.unit}</p>
+                      <p className='font-semibold'>{DisplayPriceInSoles(pricewithDiscount(item?.productId?.price, item?.productId?.discount))}</p>
+                    </div>
+                    <div>
+                      <AddToCartButton data={item?.productId} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className='bg-white p-4'>
+                <h3 className='font-semibold'>Detalles de la factura</h3>
+                <div className='flex gap-4 justify-between ml-1'>
+                  <p>Total de artículos</p>
+                  <p className='flex items-center gap-2'><span className='line-through text-neutral-400'>{DisplayPriceInSoles(notDiscountTotalPrice)}</span><span>{DisplayPriceInSoles(totalPrice)}</span></p>
+                </div>
+                <div className='flex gap-4 justify-between ml-1'>
+                  <p>Total de cantidad</p>
+                  <p className='flex items-center gap-2'>{totalQty} artículos</p>
+                </div>
+                <div className='flex gap-4 justify-between ml-1'>
+                  <p>IGV (18%)</p>
+                  <p>{DisplayPriceInSoles(IGV)}</p>
+                </div>
+                <div className='font-semibold flex items-center justify-between gap-4'>
+                  <p>Total general</p>
+                  <p>{DisplayPriceInSoles(totalConIGV)}</p>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className='bg-white flex flex-col justify-center items-center'>
+              <img src={imageEmpty} className='w-full h-full object-scale-down' />
+              <Link onClick={close} to={"/"} className='block bg-green-600 px-4 py-2 text-white rounded'>Comprar ahora</Link>
+            </div>
+          )}
         </div>
 
-        {
-          cartItem[0] && (
-            <div className='p-2'>
-              <div className='bg-green-600 text-neutral-100 px-4 font-bold text-base py-4 static bottom-3 rounded flex items-center gap-4 justify-between'>
-                <div>
-                  {DisplayPriceInSoles(totalPrice)}
-                </div>
-                <button onClick={redirectToCheckoutPage} className='flex items-center gap-1'>
-                  Proceder
-                  <span><FaCaretRight /></span>
-                </button>
+        {cartItem[0] && (
+          <div className='p-2'>
+            <div className='bg-green-600 text-neutral-100 px-4 font-bold text-base py-4 static bottom-3 rounded flex items-center gap-4 justify-between'>
+              <div>
+                {DisplayPriceInSoles(totalConIGV)}
               </div>
+              <button onClick={redirectToCheckoutPage} className='flex items-center gap-1'>
+                Proceder
+                <span><FaCaretRight /></span>
+              </button>
             </div>
-          )
-        }
-
+          </div>
+        )}
       </div>
     </section>
   )

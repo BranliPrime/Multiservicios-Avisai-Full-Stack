@@ -152,6 +152,10 @@ const SummaryAPi = {
   getOrderItems : {
     url : '/api/order/order-list',
     method : 'get'
+  },
+  consultaSunat : {
+    url : "/api/sunat/consulta-sunat",
+    method : 'post'
   }
 
 }

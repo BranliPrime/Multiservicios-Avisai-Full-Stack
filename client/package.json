@@ -14,6 +14,8 @@
     "@stripe/stripe-js": "^5.6.0",
     "@tanstack/react-table": "^8.20.6",
     "axios": "^1.7.9",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-error-overlay": "^6.0.9",
@@ -24,6 +26,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.0.2",
     "react-scripts": "^5.0.1",
+    "react-to-print": "^3.0.5",
     "react-toastify": "^11.0.2",
     "react-type-animation": "^3.2.0",
     "sweetalert2": "^11.15.10"

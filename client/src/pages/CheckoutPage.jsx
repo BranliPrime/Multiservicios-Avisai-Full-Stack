@@ -18,6 +18,10 @@ const CheckoutPage = () => {
   const cartItemsList = useSelector(state => state.cartItem.cart);
   const navigate = useNavigate();
 
+  // Cálculo del IGV (18%)
+  const igv = totalPrice * 0.18;
+  const totalConIGV = totalPrice + igv;
+
   const handleCashOnDelivery = async () => {
     try {
       const response = await Axios({
@@ -26,7 +30,7 @@ const CheckoutPage = () => {
           list_items: cartItemsList,
           addressId: addressList[selectAddress]?._id,
           subTotalAmt: totalPrice,
-          totalAmt: totalPrice,
+          totalAmt: totalConIGV, // Usar total con IGV
         },
       });
 
@@ -49,7 +53,7 @@ const CheckoutPage = () => {
     try {
       toast.loading('Cargando...');
       const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
-      const stripePromise = await loadStripe(stripePublicKey, { locale: 'es' }); // Asegura que esté en español
+      const stripePromise = await loadStripe(stripePublicKey, { locale: 'es' });
 
       const response = await Axios({
         ...SummaryApi.payment_url,
@@ -57,7 +61,7 @@ const CheckoutPage = () => {
           list_items: cartItemsList,
           addressId: addressList[selectAddress]?._id,
           subTotalAmt: totalPrice,
-          totalAmt: totalPrice,
+          totalAmt: totalConIGV, // Usar total con IGV
         },
       });
 
@@ -135,9 +139,13 @@ const CheckoutPage = () => {
               <p>Costo de envío</p>
               <p className="flex items-center gap-2">Gratis</p>
             </div>
+            <div className="flex gap-4 justify-between ml-1">
+              <p>IGV (18%)</p>
+              <p className="flex items-center gap-2">{DisplayPriceInSoles(igv)}</p>
+            </div>
             <div className="font-semibold flex items-center justify-between gap-4">
-              <p>Total</p>
-              <p>{DisplayPriceInSoles(totalPrice)}</p>
+              <p>Total con IGV</p>
+              <p>{DisplayPriceInSoles(totalConIGV)}</p>
             </div>
           </div>
           <div className="w-full flex flex-col gap-4">
