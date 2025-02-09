@@ -29,7 +29,7 @@ const InvoiceForm = ({ setInvoiceData }) => {
       [name]: value,
     });
 
-    // Si se borra el DNI o RUC, también se borra la boleta
+
     if ((name === 'dni' && value === '') || (name === 'ruc' && value === '')) {
       setBoleta(null);
       setIsValid(false);
@@ -79,7 +79,7 @@ const InvoiceForm = ({ setInvoiceData }) => {
       if ((tipo === 'dni' && documento.length === 8) || (tipo === 'ruc' && documento.length === 11)) {
         setIsLoading(true);
         try {
-          const response = await fetch(`http://localhost:3001/api/sunat/consulta-sunat`, {
+          const response = await fetch(`http://localhost:3002/api/sunat/consulta-sunat`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

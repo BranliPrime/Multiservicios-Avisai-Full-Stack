@@ -1,6 +1,6 @@
 export const consultarSunat = async (documento, tipo) => {
   try {
-    const response = await fetch('http://localhost:3001/api/sunat/consulta-sunat', {
+    const response = await fetch('http://localhost:3002/api/sunat/consulta-sunat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ documento, tipo })
