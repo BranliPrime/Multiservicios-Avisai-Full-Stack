@@ -28,33 +28,45 @@ const ProductListPage = () => {
 
   const fetchProductdata = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
+  
+      // Verificar si subCategoryId es un ObjectId válido antes de enviarlo
+      const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
+      
+      if (!isValidObjectId(subCategoryId)) {
+        console.error("❌ Error: subCategoryId no es un ObjectId válido:", subCategoryId);
+        AxiosToastError({ message: "subCategoryId inválido." });
+        setLoading(false);
+        return;
+      }
+  
       const response = await Axios({
         ...SummaryApi.getProductByCategoryAndSubCategory,
         data: {
           categoryId: categoryId,
-          subCategoryId: subCategoryId,
+          subCategoryId: subCategoryId, // Aseguramos que sea un ObjectId válido
           page: page,
           limit: 8,
         }
-      })
-
-      const { data: responseData } = response
-
+      });
+  
+      const { data: responseData } = response;
+  
       if (responseData.success) {
-        if (responseData.page == 1) {
-          setData(responseData.data)
+        if (responseData.page === 1) {
+          setData(responseData.data);
         } else {
-          setData([...data, ...responseData.data])
+          setData([...data, ...responseData.data]);
         }
-        setTotalPage(responseData.totalCount)
+        setTotalPage(responseData.totalCount);
       }
     } catch (error) {
-      AxiosToastError(error)
+      AxiosToastError(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
+  
 
   useEffect(() => {
     fetchProductdata()

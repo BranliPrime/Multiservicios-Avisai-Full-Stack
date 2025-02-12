@@ -90,7 +90,7 @@ const SummaryAPi = {
     method: 'post'
   },
   getProductByCategoryAndSubCategory: {
-    url: '/api/product/get-pruduct-by-category-and-subcategory',
+    url: '/api/product/get-product-by-category-and-subcategory',
     method: 'post'
   },
   getProductDetails: {
@@ -156,6 +156,9 @@ const SummaryAPi = {
   consultaSunat : {
     url : "/api/sunat/consulta-sunat",
     method : 'post'
+  },
+  reportesVenta : {
+    url : "api/order/sales-report"
   }
 
 }

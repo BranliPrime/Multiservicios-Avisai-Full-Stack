@@ -207,3 +207,58 @@ export async function getOrderDetailsController(req, res) {
     })
   }
 }
+
+export async function getSalesReportController(req, res) {
+  try {
+    let { startDate, endDate } = req.query;
+
+    let filter = {};
+    if (startDate || endDate) {
+      filter.createdAt = {};
+      if (startDate) filter.createdAt.$gte = new Date(startDate);
+      if (endDate) filter.createdAt.$lte = new Date(endDate);
+    }
+
+    // 🔹 Verificar si los valores de fecha son válidos
+    if ((startDate && isNaN(new Date(startDate))) || (endDate && isNaN(new Date(endDate)))) {
+      return res.status(400).json({
+        message: "Formato de fecha no válido. Usa YYYY-MM-DD.",
+        error: true,
+        success: false
+      });
+    }
+
+    // 🔹 Optimización con aggregation y filtrado
+    const salesReport = await OrderModel.aggregate([
+      { $match: filter },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          totalSales: { $sum: "$totalAmt" },
+          totalOrders: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: -1 } }
+    ]);
+
+    // 🔹 Calcular totales
+    const totalSales = salesReport.reduce((acc, item) => acc + item.totalSales, 0);
+    const totalOrders = salesReport.reduce((acc, item) => acc + item.totalOrders, 0);
+
+    return res.json({
+      message: "Reporte de ventas generado exitosamente.",
+      totalSales,
+      totalOrders,
+      salesByDate: salesReport,
+      success: true,
+      error: false
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || "Error al obtener el reporte de ventas",
+      error: true,
+      success: false
+    });
+  }
+}

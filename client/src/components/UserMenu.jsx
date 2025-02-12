@@ -50,45 +50,58 @@ const UserMenu = ({ close }) => {
 
   return (
     <div ref={menuRef}>
-      <div className='font-semibold'>Mi cuenta</div>
-      <div className='text-sm flex items-center gap-2'>
-        <span className='max-w-52 text-ellipsis line-clamp-1'>
+      <div className="font-semibold">Mi cuenta</div>
+      <div className="text-sm flex items-center gap-2">
+        <span className="max-w-52 text-ellipsis line-clamp-1">
           {user?.name || user?.mobile || 'Usuario'}{' '}
-          {user?.role === 'ADMIN' && <span className='text-medium text-red-600'>(Admin)</span>}
+          {user?.role === 'ADMIN' && (
+            <span className="text-medium text-red-600">(Admin)</span>
+          )}
         </span>
-        <Link onClick={() => close && close()} to={'/dashboard/profile'} className='hover:text-primary-200'>
+        <Link onClick={() => close && close()} to={'/dashboard/profile'} className="hover:text-primary-200">
           <HiOutlineExternalLink size={15} />
         </Link>
       </div>
 
       <Divider />
 
-      <div className='text-sm grid gap-1'>
+      <div className="text-sm grid gap-1">
         {isAdmin(user?.role) && (
           <>
-            <Link onClick={() => close && close()} to={'/dashboard/category'} className='px-2 hover:bg-orange-200 py-1'>
+            {/* Opciones del ADMIN */}
+            <Link onClick={() => close && close()} to={'/dashboard/category'} className="px-2 hover:bg-orange-200 py-1">
               Categoría
             </Link>
-            <Link onClick={() => close && close()} to={'/dashboard/subcategory'} className='px-2 hover:bg-orange-200 py-1'>
+            <Link onClick={() => close && close()} to={'/dashboard/subcategory'} className="px-2 hover:bg-orange-200 py-1">
               Sub Categoría
             </Link>
-            <Link onClick={() => close && close()} to={'/dashboard/upload-product'} className='px-2 hover:bg-orange-200 py-1'>
+            <Link onClick={() => close && close()} to={'/dashboard/upload-product'} className="px-2 hover:bg-orange-200 py-1">
               Subir un producto
             </Link>
-            <Link onClick={() => close && close()} to={'/dashboard/product'} className='px-2 hover:bg-orange-200 py-1'>
+            <Link onClick={() => close && close()} to={'/dashboard/product'} className="px-2 hover:bg-orange-200 py-1">
               Producto
+            </Link>
+
+            {/* Enlace al reporte de ventas solo si el usuario es ADMIN */}
+            <Link
+              to="/dashboard/sales-report" // Ruta del reporte de ventas
+              className="px-2 hover:bg-orange-200 py-1"
+              onClick={() => close && close()} // Cierra el menú después de hacer clic
+            >
+              📊 Reporte de Ventas
             </Link>
           </>
         )}
 
-        <Link onClick={() => close && close()} to={'/dashboard/myorders'} className='px-2 hover:bg-orange-200 py-1'>
+        {/* Opciones para todos los usuarios */}
+        <Link onClick={() => close && close()} to={'/dashboard/myorders'} className="px-2 hover:bg-orange-200 py-1">
           Mis pedidos
         </Link>
-        <Link onClick={() => close && close()} to={'/dashboard/address'} className='px-2 hover:bg-orange-200 py-1'>
+        <Link onClick={() => close && close()} to={'/dashboard/address'} className="px-2 hover:bg-orange-200 py-1">
           Guardar Dirección
         </Link>
 
-        <button onClick={handleLogout} className='text-left px-2 hover:bg-orange-200 py-1'>
+        <button onClick={handleLogout} className="text-left px-2 hover:bg-orange-200 py-1">
           Cerrar sesión
         </button>
       </div>
