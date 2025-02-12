@@ -51,7 +51,7 @@ const EditProductAdmin = ({ close, data: propsData, fetchProductData }) => {
         if (!value || value.trim() === "") return "La unidad es obligatoria";
         return "";
       case 'stock':
-        if (value === "" || Number(value) < 0) return "La cantidad en stock debe ser un número positivo";
+        if (value === "" || Number(value) <= 0) return "La cantidad en stock debe ser un número positivo";
         return "";
       case 'price':
         if (value === "" || Number(value) <= 0) return "El precio debe ser mayor a 0";
