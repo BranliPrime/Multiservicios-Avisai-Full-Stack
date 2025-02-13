@@ -82,13 +82,12 @@ const UserMenu = ({ close }) => {
               Producto
             </Link>
 
-            {/* Enlace al reporte de ventas solo si el usuario es ADMIN */}
             <Link
-              to="/dashboard/sales-report" // Ruta del reporte de ventas
+              to="/dashboard/sales-report" 
               className="px-2 hover:bg-orange-200 py-1"
-              onClick={() => close && close()} // Cierra el menú después de hacer clic
+              onClick={() => close && close()} 
             >
-              📊 Reporte de Ventas
+              Reporte de Ventas
             </Link>
           </>
         )}
