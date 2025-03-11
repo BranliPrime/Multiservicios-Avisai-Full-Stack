@@ -196,7 +196,7 @@ const EditProductAdmin = ({ close, data: propsData, fetchProductData }) => {
     <section className='fixed top-0 right-0 left-0 bottom-0 bg-black z-50 bg-opacity-70 p-4'>
       <div className='bg-white w-full p-4 max-w-2xl mx-auto rounded overflow-y-auto h-full max-h-[95vh]'>
         <section>
-          {/* Encabezado del formulario */}
+
           <div className='p-2 bg-white shadow-md flex items-center justify-between'>
             <h2 className='font-semibold'>Editar Producto</h2>
             <button onClick={close}>
@@ -205,7 +205,7 @@ const EditProductAdmin = ({ close, data: propsData, fetchProductData }) => {
           </div>
           <div className='grid p-3'>
             <form className='grid gap-4' onSubmit={handleSubmit}>
-              {/* Campo: Nombre */}
+
               <div className='grid gap-1'>
                 <label htmlFor='name' className='font-medium'>Nombre</label>
                 <input
@@ -220,7 +220,7 @@ const EditProductAdmin = ({ close, data: propsData, fetchProductData }) => {
                 />
                 {formErrors.name && <p className='text-red-500 text-sm'>{formErrors.name}</p>}
               </div>
-              {/* Campo: Descripción */}
+
               <div className='grid gap-1'>
                 <label htmlFor='description' className='font-medium'>Descripción</label>
                 <textarea
@@ -235,7 +235,7 @@ const EditProductAdmin = ({ close, data: propsData, fetchProductData }) => {
                 />
                 {formErrors.description && <p className='text-red-500 text-sm'>{formErrors.description}</p>}
               </div>
-              {/* Sección de Imágenes */}
+
               <div>
                 <p className='font-medium'>Imágenes</p>
                 <div>
@@ -274,7 +274,7 @@ const EditProductAdmin = ({ close, data: propsData, fetchProductData }) => {
                   </div>
                 </div>
               </div>
-              {/* Campo: Categoría */}
+
               <div className='grid gap-1'>
                 <label className='font-medium'>Categoría</label>
                 <div>
@@ -308,7 +308,6 @@ const EditProductAdmin = ({ close, data: propsData, fetchProductData }) => {
                   </div>
                 </div>
               </div>
-              {/* Campo: Subcategoría */}
               <div className='grid gap-1'>
                 <label className='font-medium'>Subcategoría</label>
                 <div>
@@ -342,7 +341,6 @@ const EditProductAdmin = ({ close, data: propsData, fetchProductData }) => {
                   </div>
                 </div>
               </div>
-              {/* Campo: Unidad */}
               <div className='grid gap-1'>
                 <label htmlFor='unit' className='font-medium'>Unidad</label>
                 <input
@@ -357,7 +355,7 @@ const EditProductAdmin = ({ close, data: propsData, fetchProductData }) => {
                 />
                 {formErrors.unit && <p className='text-red-500 text-sm'>{formErrors.unit}</p>}
               </div>
-              {/* Campo: Stock */}
+
               <div className='grid gap-1'>
                 <label htmlFor='stock' className='font-medium'>Cantidad en Stock</label>
                 <input
@@ -373,7 +371,6 @@ const EditProductAdmin = ({ close, data: propsData, fetchProductData }) => {
                 />
                 {formErrors.stock && <p className='text-red-500 text-sm'>{formErrors.stock}</p>}
               </div>
-              {/* Campo: Precio */}
               <div className='grid gap-1'>
                 <label htmlFor='price' className='font-medium'>Precio</label>
                 <input
@@ -389,7 +386,7 @@ const EditProductAdmin = ({ close, data: propsData, fetchProductData }) => {
                 />
                 {formErrors.price && <p className='text-red-500 text-sm'>{formErrors.price}</p>}
               </div>
-              {/* Campo: Descuento */}
+
               <div className='grid gap-1'>
                 <label htmlFor='discount' className='font-medium'>Descuento</label>
                 <input
@@ -405,7 +402,7 @@ const EditProductAdmin = ({ close, data: propsData, fetchProductData }) => {
                 />
                 {formErrors.discount && <p className='text-red-500 text-sm'>{formErrors.discount}</p>}
               </div>
-              {/* Sección para agregar campos adicionales */}
+
               {
                 Object.keys(data.more_details).map((k, index) => (
                   <div className='grid gap-1' key={k + index}>

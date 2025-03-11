@@ -1,94 +1,139 @@
 import React, { useEffect, useState } from 'react';
+import Autosuggest from 'react-autosuggest';
 import { IoSearch } from "react-icons/io5";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { TypeAnimation } from 'react-type-animation';
 import { FaArrowLeft } from "react-icons/fa";
 import useMobile from '../hooks/useMobile';
+import Axios from '../utils/Axios';
+import SummaryApi from '../common/SummaryApi';
 
 const Search = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isSearchPage, setIsSearchPage] = useState(false);
-  const [isMobile] = useMobile()
-  const params = useLocation()
-  const searchText = params.search.slice(3)
+  const [isMobile] = useMobile();
+  const params = new URLSearchParams(location.search);
+  const searchText = params.get('q') || "";
+  const [suggestions, setSuggestions] = useState([]);
+  const [query, setQuery] = useState(searchText);
 
   useEffect(() => {
-    const isSearch = location.pathname === "/search";
-    setIsSearchPage(isSearch)
-  }, [location])
+    setIsSearchPage(location.pathname === "/search");
+  }, [location]);
 
-  const redirectToSearchPage = () => {
-    navigate("/search")
-  }
+  useEffect(() => {
+    if (isSearchPage) {
+      fetchSuggestions(query);
+    } else {
+      setSuggestions([]);
+    }
+  }, [query, isSearchPage]);
 
-  const handleOnChange = (e)=>{
-    const value = e.target.value
-    const url = `/search?q=${value}`
-    navigate(url)
-}
+  useEffect(() => {
+    if (searchText === "") {
+      setQuery("");
+    }
+  }, [searchText]);
+
+  const fetchSuggestions = async (searchTerm) => {
+    try {
+      const response = await Axios({
+        ...SummaryApi.searchProduct,
+        data: { search: searchTerm || "" }
+      });
+      if (response.data.success) {
+        setSuggestions(response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching suggestions:", error);
+    }
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!isSearchPage) {
+      navigate("/search");
+    } else {
+      fetchSuggestions(query);
+    }
+  };
+
+  const inputProps = {
+    placeholder: 'Buscar...',
+    value: query,
+    onChange: (e, { newValue }) => setQuery(newValue),
+    className: 'w-full bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400 focus:ring-0',
+  };
 
   return (
-    <div className='w-full min-w-[300px] lg:min-w-[420px] h-11 lg:h-12 rounded-lg border overflow-hidden flex items-center text-neutral-500 bg-slate-50 group focus-within:border-primary-200'>
+    <div className='w-full min-w-[300px] lg:min-w-[420px] h-10 lg:h-11 rounded-full border border-gray-300 bg-white flex items-center text-neutral-500 transition focus-within:shadow-md relative'>
       <div>
         {
           (isMobile && isSearchPage) ? (
-            <Link to={"/"} className='flex justify-center items-center h-full p-3 group-focus-within:text-primary-200'>
-              <FaArrowLeft size={20} />
+            <Link to={'/'} className='flex justify-center items-center h-full p-2 text-gray-500 hover:text-gray-700'>
+              <FaArrowLeft size={18} />
             </Link>
           ) : (
-            <button className='flex justify-center items-center h-full p-3 group-focus-within:text-primary-200'>
-              <IoSearch size={22} />
+            <button onClick={handleSearch} className='flex justify-center items-center h-full p-2 text-gray-500 hover:text-gray-700'>
+              <IoSearch size={18} />
             </button>
           )
         }
       </div>
-      <div className='w-full'>
+      <div className='w-full relative'>
         {
           !isSearchPage ? (
-            <div onClick={redirectToSearchPage}>
+            <div onClick={() => navigate("/search")} className='text-sm text-gray-400 cursor-text'>
               <TypeAnimation
                 sequence={[
-                  'Search "mamparas"',
-                  1000,
-                  'Search "puertas"',
-                  1000,
-                  'Search "ventanas"',
-                  1000,
-                  'Search "drywall"',
-                  1000,
-                  'Search "barrandas"',
-                  1000,
-                  'Search "proyectantes"',
-                  1000,
-                  'Search "puertas de ducha"',
-                  1000,
-                  'Search "sistema nova"',
-                  1000,
-                  'Search "muebles en melamine"',
-                  1000
+                  'Buscar "mamparas"', 1500,
+                  'Buscar "puertas"', 1500,
+                  'Buscar "ventanas"', 1500,
+                  'Buscar "drywall"', 1500,
+                  'Buscar "barandas"', 1500,
+                  'Buscar "proyectantes"', 1500,
+                  'Buscar "puertas de ducha"', 1500,
+                  'Buscar "sistema nova"', 1500,
+                  'Buscar "muebles en melamine"', 1500
                 ]}
                 wrapper="span"
-                speed={50}
+                speed={40}
                 repeat={Infinity}
               />
             </div>
           ) : (
-            <div className='w-full h-full flex items-center'>
-              <input
-                type="text"
-                placeholder='Search for atta del and more'
-                autoFocus
-                defaultValue={searchText}
-                className='bg-transparent w-full outline-none'
-                onChange={handleOnChange}
-              />
+            <div className='w-full h-full flex items-center relative'>
+              <form onSubmit={handleSearch} className="w-full flex">
+                <Autosuggest
+                  suggestions={suggestions.slice(0, 7)}
+                  onSuggestionsFetchRequested={({ value }) => fetchSuggestions(value)}
+                  onSuggestionsClearRequested={() => setSuggestions([])}
+                  getSuggestionValue={(suggestion) => suggestion.name}
+                  renderSuggestion={(suggestion) => (
+                    <div className='p-3 cursor-pointer hover:bg-gray-100 text-gray-800 text-sm border-b border-gray-200'>
+                      {suggestion.name}
+                    </div>
+                  )}
+                  onSuggestionSelected={(event, { suggestion }) => {
+                    setQuery(suggestion.name);
+                    navigate(`/search?q=${suggestion.name}`);
+                  }}
+                  inputProps={inputProps}
+                  theme={{
+                    container: 'relative',
+                    suggestionsContainer: 'absolute w-full bg-white shadow-md rounded-lg mt-2 z-50',
+                    suggestionsList: 'list-none p-0 m-0 max-h-[200px] overflow-y-auto',
+                    suggestion: 'p-3 cursor-pointer hover:bg-gray-100 text-gray-800 text-sm border-b border-gray-200'
+                  }}
+                />
+              </form>
             </div>
           )
         }
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Search
+export default Search;

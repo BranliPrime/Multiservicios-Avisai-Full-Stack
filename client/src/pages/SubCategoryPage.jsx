@@ -19,14 +19,11 @@ const SubCategoryPage = () => {
   const columnHelper = createColumnHelper()
   const [ImageURL, setImageURL] = useState("")
   const [openEdit, setOpenEdit] = useState(false)
-  const [editData, setEditData] = useState({
-    _id: ""
-  })
-  const [deleteSubCategory, setDeleteSubCategory] = useState({
-    _id: ""
-  })
+  const [editData, setEditData] = useState({ _id: "" })
+  const [deleteSubCategory, setDeleteSubCategory] = useState({ _id: "" })
   const [openDeleteConfirmBox, setOpenDeleteConfirmBox] = useState(false)
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 14;
 
   const fetchSubCategory = async () => {
     try {
@@ -37,7 +34,8 @@ const SubCategoryPage = () => {
       const { data: responseData } = response
 
       if (responseData.success) {
-        setData(responseData.data)
+        const sortedData = responseData.data.sort((a, b) => a.name.localeCompare(b.name));
+        setData(sortedData)
       }
     } catch (error) {
       AxiosToastError(error)
@@ -50,6 +48,12 @@ const SubCategoryPage = () => {
     fetchSubCategory()
   }, [])
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+
   const column = [
     columnHelper.accessor('name', {
       header: "Nombre"
@@ -57,7 +61,6 @@ const SubCategoryPage = () => {
     columnHelper.accessor('image', {
       header: "Imagen",
       cell: ({ row }) => {
-        console.log("row",)
         return <div className='flex justify-center items-center'>
           <img
             src={row.original.image}
@@ -75,13 +78,9 @@ const SubCategoryPage = () => {
       cell: ({ row }) => {
         return (
           <>
-            {
-              row.original.category.map((c, index) => {
-                return (
-                  <p key={c._id + "table"} className='shadow-md px-1 inline-block'>{c.name}</p>
-                )
-              })
-            }
+            {row.original.category.map((c) => (
+              <p key={c._id + "table"} className='shadow-md px-1 inline-block'>{c.name}</p>
+            ))}
           </>
         )
       }
@@ -115,7 +114,6 @@ const SubCategoryPage = () => {
         ...SummaryApi.deleteSubCategory,
         data: deleteSubCategory
       })
-
       const { data: responseData } = response
 
       if (responseData.success) {
@@ -128,53 +126,58 @@ const SubCategoryPage = () => {
       AxiosToastError(error)
     }
   }
+
   return (
     <section className=''>
-      <div className='p-2   bg-white shadow-md flex items-center justify-between'>
+      <div className='p-2 bg-white shadow-md flex items-center justify-between'>
         <h2 className='font-semibold'>Sub Categoria</h2>
         <button onClick={() => setOpenAddSubCategory(true)} className='text-sm border border-primary-200 hover:bg-primary-200 px-3 py-1 rounded'>Agregar Sub Categoria</button>
       </div>
 
       <div className='overflow-auto w-full max-w-[95vw]'>
         <DisplayTable
-          data={data}
+          data={currentData}
           column={column}
         />
       </div>
 
+      <div className="flex justify-center mt-6 gap-2">
+        <button
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+          className="px-4 py-2 border border-yellow-400 bg-white text-gray-700 rounded-lg shadow-sm hover:bg-yellow-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          ← Anterior
+        </button>
 
-      {
-        openAddSubCategory && (
-          <UploadSubCategoryModel
-            close={() => setOpenAddSubCategory(false)}
-            fetchData={fetchSubCategory}
-          />
-        )
-      }
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentPage(i + 1)}
+            className={`px-4 py-2 rounded-lg shadow-sm transition ${currentPage === i + 1
+                ? "bg-yellow-500 text-white font-semibold"
+                : "border border-yellow-400 bg-white text-gray-700 hover:bg-yellow-400"
+              }`}
+          >
+            {i + 1}
+          </button>
+        ))}
 
-      {
-        ImageURL &&
-        <ViewImage url={ImageURL} close={() => setImageURL("")} />
-      }
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+          className="px-4 py-2 border border-yellow-300 bg-white text-gray-700 rounded-lg shadow-sm hover:bg-yellow-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Siguiente →
+        </button>
+      </div>
 
-      {
-        openEdit &&
-        <EditSubCategory
-          data={editData}
-          close={() => setOpenEdit(false)}
-          fetchData={fetchSubCategory}
-        />
-      }
 
-      {
-        openDeleteConfirmBox && (
-          <ConfirmBox
-            cancel={() => setOpenDeleteConfirmBox(false)}
-            close={() => setOpenDeleteConfirmBox(false)}
-            confirm={handleDeleteSubCategory}
-          />
-        )
-      }
+
+      {openAddSubCategory && <UploadSubCategoryModel close={() => setOpenAddSubCategory(false)} fetchData={fetchSubCategory} />}
+      {ImageURL && <ViewImage url={ImageURL} close={() => setImageURL("")} />}
+      {openEdit && <EditSubCategory data={editData} close={() => setOpenEdit(false)} fetchData={fetchSubCategory} />}
+      {openDeleteConfirmBox && <ConfirmBox cancel={() => setOpenDeleteConfirmBox(false)} close={() => setOpenDeleteConfirmBox(false)} confirm={handleDeleteSubCategory} />}
     </section>
   )
 }
